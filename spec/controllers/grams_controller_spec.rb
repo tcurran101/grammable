@@ -72,7 +72,7 @@ RSpec.describe GramsController, type: :controller do
     end
 
     it "should return a 404 error message if the gram is not found" do
-      get :edit, params: { id: 'TACOCAT' }
+      get :edit, params: { id: 'SWAG' }
       expect(response).to have_http_status(:not_found)
     end
   end
@@ -87,7 +87,7 @@ RSpec.describe GramsController, type: :controller do
     end
 
     it "should return a 404 error message if the gram cant be found" do
-      patch :update, params: { id: 'Junk', gram: { message: "Changed" } }
+      patch :update, params: { id: "YOLOSWAG", gram: { message: 'Changed' } }
       expect(response).to have_http_status(:not_found)
     end
 
@@ -97,6 +97,21 @@ RSpec.describe GramsController, type: :controller do
       expect(response).to have_http_status(:unprocessable_entity)
       gram.reload
       expect(gram.message).to eq "Initial Value"
+    end
+  end
+
+  describe "grams#destroy action" do
+    it "should allow users to destroy grams" do
+      gram = FactoryBot.create(:gram)
+      delete :destroy, params: { id: gram.id }
+      expect(response).to redirect_to root_path
+      gram = Gram.find_by_id(gram.id)
+      expect(gram).to eq nil
+    end
+
+    it "should return a 404 error message if the gram cant be found w specified ID" do
+      delete :destroy, params: { id: 'DROID' }
+      expect(response).to have_http_status(:not_found)
     end
   end
 
